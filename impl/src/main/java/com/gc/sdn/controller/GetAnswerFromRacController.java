@@ -6,7 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.gc.sdn.constant.Constant;
 import com.gc.sdn.constant.ResponseResult;
 import com.gc.sdn.service.GetAnswerFromRacService;
-import javax.annotation.Resource;
+//import javax.annotation.Resource;
 
 import static com.gc.sdn.util.ParameterUtil.*;
 
