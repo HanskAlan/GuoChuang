@@ -45,7 +45,6 @@ public class CoFlowPacketProcessingListener implements PacketProcessingListener{
     public void onPacketReceived(PacketReceived notification) {
         ParameterUtil parameterUtil = new ParameterUtil();
         GetAnswerFromRacController getAnswerFromRacController = new GetAnswerFromRacController();
-        RACLog.instance().setPath("F:\\odl\\coflow\\target\\RACLog\\");
         if(count == 1){
             JSONObject jsonObject = parameterUtil.initTopologyInfo(Constant.host,Constant.port,Constant.username,
                     Constant.password, Constant.containerName);
@@ -55,6 +54,7 @@ public class CoFlowPacketProcessingListener implements PacketProcessingListener{
                 return;
             }else{
                 try {
+                    RACLog.instance().setPath("D:\\EP3Mulcos_ODL\\target\\RACLog\\");
                     RAC.instance().INITIAL_RAC(jsonObject);
                     count++;
                     logger.info("Topology initialization completed successfully!");
