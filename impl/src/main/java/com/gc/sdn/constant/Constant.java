@@ -18,7 +18,8 @@ public interface Constant {
     public static final Integer FORMAT_ERROR = 415;
     public static final Integer INTEGER_SERVER_ERROR = 500;
 
-    public static final String host = "192.168.0.105";
+//    public static final String host = "192.168.0.105";
+    public static final String host = "192.168.2.119";
     public static final Integer port = 6633;
     public static final String username = "admin";
     public static final String password = "admin";
