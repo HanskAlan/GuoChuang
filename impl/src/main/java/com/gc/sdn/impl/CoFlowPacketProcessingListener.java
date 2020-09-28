@@ -25,13 +25,13 @@ import java.util.*;
 
 
 /**
- * @author: pan.wen
+ * @author pan.wen
  */
 public class CoFlowPacketProcessingListener implements PacketProcessingListener{
 
     private static int count = 1;
 //    private static List listFlow = new ArrayList();
-    private static Map<Integer,List> coflowMap = new HashMap<>();
+    private static final Map<Integer,ArrayList<Integer>> coflowMap = new HashMap<>();
 
     private static final Logger logger = LoggerFactory.getLogger(CoFlowPacketProcessingListener.class);
 
@@ -114,7 +114,7 @@ public class CoFlowPacketProcessingListener implements PacketProcessingListener{
             byte[] strBuffer = PacketParsing.extractStrInfo(payload);
             String str = new String(strBuffer, "utf-8");
             str = str.replaceAll("[\u0000]","");
-            if(str != null && str != ""){
+            if(!Objects.equals(str, "")){
                 String[] s = str.split(";");
                 String[] strCoFlowId = s[0].split("=");
                 coFlowID = Integer.parseInt(strCoFlowId[1]);
@@ -155,49 +155,46 @@ public class CoFlowPacketProcessingListener implements PacketProcessingListener{
             e.printStackTrace();
         }
 
-        if(det_ip != "" && det_ip.equals(dstIp)){
-            List listFlow = new ArrayList();
+        if(!det_ip.equals("") && det_ip.equals(dstIp)){
             if(!coflowMap.containsKey(coFlowID)) {
-                coflowMap.put(coFlowID, listFlow);
+                coflowMap.put(coFlowID, new ArrayList<>());
             }
-            listFlow = coflowMap.get(coFlowID);
-            if(listFlow.contains(flowId)){
-                return;
-            }else {
-                listFlow.add(flowId);
+            ArrayList<Integer> listFlow = coflowMap.get(coFlowID);
+            if(listFlow.contains(flowId)) return;
+            listFlow.add(flowId);
+            try {
+                long timeArrive = System.currentTimeMillis();
+                RAC.instance().FLOW_ARRIVE(jsonFlow, timeArrive);
+                boolean solve = RAC.instance().TRY_SOLVE();
+                if (solve) {
+                    JSONArray arrayGet = RAC.instance().GET_ANSWER_FAST_JSON();
+                    if (arrayGet != null && arrayGet.size() > 0) {
+                        getAnswerFromRacController.startRacPushFlow(arrayGet);
+                    }
+                }
+            } catch (JsonFormatException e) {
+                e.printStackTrace();
+            }
+        }else {
+            // 假如coflow不存在或者flow不存在，就不是相应的ack信号
+            if(!coflowMap.containsKey(coFlowID))return;
+            ArrayList<Integer> listFlow = coflowMap.get(coFlowID);
+            if(!listFlow.contains(flowId))return;
+            // det_ip正好是反向的
+            if(det_ip.equals(srcIp)){
                 try {
-                    long timeArrive = System.currentTimeMillis();
-                    RAC.instance().FLOW_ARRIVE(jsonFlow, timeArrive);
-                    boolean solve = RAC.instance().TRY_SOLVE();
-                    if (solve) {
+                    // 流传输完成，但是其他的还没完成（你之前把一个coflow的全部flow都删掉了）
+                    if (RAC.instance().COMPLETE_AND_TRY(jsonFlow, System.currentTimeMillis())) {
                         JSONArray arrayGet = RAC.instance().GET_ANSWER_FAST_JSON();
                         if (arrayGet != null && arrayGet.size() > 0) {
                             getAnswerFromRacController.startRacPushFlow(arrayGet);
                         }
                     }
                 } catch (JsonFormatException e) {
-                    e.printStackTrace();
+                    e.printStackTrace(); // 我也不知道这种情况怎么办
                 }
-            }
-        }else if(det_ip != "" && !det_ip.equals(dstIp)){
-            if(coflowMap.get(coFlowID).size() > 0){
-                if(coflowMap.get(coFlowID).contains(flowId)){
-                    try {
-                        for (int i = 0; i < coflowMap.get(coFlowID).size(); i++) {
-                            long timeComplete = System.currentTimeMillis();
-                            jsonFlow.put("flowID", coflowMap.get(coFlowID).get(i));
-                            RAC.instance().FLOW_COMPLETE(jsonFlow, timeComplete);
-                        }
-                    }catch (JsonFormatException e){
-                        e.printStackTrace();
-                    }finally {
-                        coflowMap.remove(coFlowID);
-                    }
-                }else{
-                    return;
-                }
-            }else{
-                return;
+                listFlow.remove(flowId);
+                if(listFlow.size() == 0)coflowMap.remove(coFlowID);
             }
         }
 //            if(!"lastPacket".equals(lastPacketFlag)){
