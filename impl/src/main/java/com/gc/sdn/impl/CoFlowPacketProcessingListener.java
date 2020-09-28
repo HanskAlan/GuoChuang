@@ -32,6 +32,7 @@ public class CoFlowPacketProcessingListener implements PacketProcessingListener{
     private static int count = 1;
 //    private static List listFlow = new ArrayList();
     private static final Map<Integer,ArrayList<Integer>> coflowMap = new HashMap<>();
+    private static final Map<Integer,Map<Integer,Long>> timeMap = new HashMap<>(); // 记录上次结束的时间
 
     private static final Logger logger = LoggerFactory.getLogger(CoFlowPacketProcessingListener.class);
 
@@ -64,8 +65,6 @@ public class CoFlowPacketProcessingListener implements PacketProcessingListener{
         }
         // 从notification获取payload
         byte[] payload = notification.getPayload();
-        // 获取payload的大小
-        int packetSize = payload.length;
         // 解析MAC地址
         byte[] srcMacRaw = PacketParsing.extractSrcMac(payload);
         byte[] dstMacRaw = PacketParsing.extractDstMac(payload);
@@ -109,7 +108,8 @@ public class CoFlowPacketProcessingListener implements PacketProcessingListener{
         long dataSize = 0;
 //        String lastPacketFlag = "";
 //        long lastPacketSize = 0;
-        String det_ip = "";
+        String payloadDstIp = "";
+        String payloadSrcIp = "";
         try {
             byte[] strBuffer = PacketParsing.extractStrInfo(payload);
             String str = new String(strBuffer, "utf-8");
@@ -124,10 +124,10 @@ public class CoFlowPacketProcessingListener implements PacketProcessingListener{
                 flowId = Integer.parseInt(strFLowId[1]);
                 String[] strDataSize = s[3].split("=");
                 dataSize = Long.parseLong(strDataSize[1]);
-//                String[] strIsLast = s[3].split("=");
-//                lastPacketFlag = strIsLast[1];
+                String[] strSrcIp = s[4].split("=");
+                payloadSrcIp = strSrcIp[1];
                 String[] strDetIp = s[5].split("=");
-                det_ip = strDetIp[1];
+                payloadDstIp = strDetIp[1];
                 if(flowCount != 0){
                     jsonFlow.put("coflowSize",flowCount);
                 }else{
@@ -155,7 +155,13 @@ public class CoFlowPacketProcessingListener implements PacketProcessingListener{
             e.printStackTrace();
         }
 
-        if(!det_ip.equals("") && det_ip.equals(dstIp)){
+        // 避免抖动，一条流传输结束一段时间内直接拒绝
+        if(timeMap.containsKey(coFlowID) && timeMap.get(coFlowID).containsKey(flowId) && timeMap.get(coFlowID).get(flowId) < System.currentTimeMillis() + 5000){
+            timeMap.get(coFlowID).put(flowId,System.currentTimeMillis());
+            return;
+        }
+
+        if(payloadDstIp.equals(dstIp)){
             if(!coflowMap.containsKey(coFlowID)) {
                 coflowMap.put(coFlowID, new ArrayList<>());
             }
@@ -163,10 +169,7 @@ public class CoFlowPacketProcessingListener implements PacketProcessingListener{
             if(listFlow.contains(flowId)) return;
             listFlow.add(flowId);
             try {
-                long timeArrive = System.currentTimeMillis();
-                RAC.instance().FLOW_ARRIVE(jsonFlow, timeArrive);
-                boolean solve = RAC.instance().TRY_SOLVE();
-                if (solve) {
+                if (RAC.instance().ARRIVE_AND_TRY(jsonFlow,System.currentTimeMillis())) {
                     JSONArray arrayGet = RAC.instance().GET_ANSWER_FAST_JSON();
                     if (arrayGet != null && arrayGet.size() > 0) {
                         getAnswerFromRacController.startRacPushFlow(arrayGet);
@@ -175,107 +178,29 @@ public class CoFlowPacketProcessingListener implements PacketProcessingListener{
             } catch (JsonFormatException e) {
                 e.printStackTrace();
             }
-        }else {
+        }else if(payloadSrcIp.equals(dstIp)){// 假如包向着payloadSrcIp发送过去
             // 假如coflow不存在或者flow不存在，就不是相应的ack信号
             if(!coflowMap.containsKey(coFlowID))return;
             ArrayList<Integer> listFlow = coflowMap.get(coFlowID);
             if(!listFlow.contains(flowId))return;
-            // det_ip正好是反向的
-            if(det_ip.equals(srcIp)){
-                try {
-                    // 流传输完成，但是其他的还没完成（你之前把一个coflow的全部flow都删掉了）
-                    if (RAC.instance().COMPLETE_AND_TRY(jsonFlow, System.currentTimeMillis())) {
-                        JSONArray arrayGet = RAC.instance().GET_ANSWER_FAST_JSON();
-                        if (arrayGet != null && arrayGet.size() > 0) {
-                            getAnswerFromRacController.startRacPushFlow(arrayGet);
-                        }
+            try {
+                // 流传输完成，但是其他的还没完成（你之前把一个coflow的全部flow都删掉了）
+                if (RAC.instance().COMPLETE_AND_TRY(jsonFlow, System.currentTimeMillis())) {
+                    JSONArray arrayGet = RAC.instance().GET_ANSWER_FAST_JSON();
+                    if (arrayGet != null && arrayGet.size() > 0) {
+                        getAnswerFromRacController.startRacPushFlow(arrayGet);
                     }
-                } catch (JsonFormatException e) {
-                    e.printStackTrace(); // 我也不知道这种情况怎么办
                 }
                 listFlow.remove(Integer.valueOf(flowId));
                 if(listFlow.size() == 0)coflowMap.remove(coFlowID);
+                // 同时在timeMap中记录上次结束的时间，以避免统一体流的反复处理
+                if(!timeMap.containsKey(coFlowID))timeMap.put(coFlowID,new HashMap<>());
+                Map<Integer, Long> flowTimeMap = timeMap.get(coFlowID);
+                flowTimeMap.put(coFlowID,System.currentTimeMillis());
+            } catch (JsonFormatException e) {
+                e.printStackTrace(); // 我也不知道这种情况怎么办
             }
         }
-//            if(!"lastPacket".equals(lastPacketFlag)){
-//                if(dataSize != 0){
-//                    long flowSizeCount = packetMap.get(dstPort);
-//                    packetMap.put(dstPort,dataSize + flowSizeCount);
-//                    lastFlowId = dstPort;
-//                    return;
-//                }
-//                return;
-//            }else if("lastPacket".equals(lastPacketFlag)){
-//                long flowSizeCount = packetMap.get(dstPort);
-//                packetMap.put(dstPort,dataSize + flowSizeCount);
-//                lastFlowId = dstPort;
-//                logger.info("packet send completed,please wait for the result to return!");
-//                System.out.println("数据包发送完毕,请等待结果返回!");
-//            }
-//        }else{
-//            if(!"lastPacket".equals(lastPacketFlag)){
-//                if(dataSize != 0){
-//                    long flowSizeCount = packetMap.get(dstPort);
-//                    packetMap.put(dstPort,dataSize + flowSizeCount);
-//                    lastFlowId = dstPort;
-//                    return;
-//                }
-//                return;
-//            }else if("lastPacket".equals(lastPacketFlag)){
-//                long flowSizeCount = packetMap.get(dstPort);
-//                packetMap.put(dstPort,dataSize + flowSizeCount);
-//                lastFlowId = dstPort;
-//                logger.info("packet send completed,please wait for the result to return!");
-//                System.out.println("数据包发送完毕,请等待结果返回!");
-//            }
-
-
-
-        // 协流所有数据包到达后开始调用算法
-//        try {
-//            // 子流到达
-//            if(flowCount != 0 && "lastPacket".equals(lastPacketFlag) ) {
-//                // 遍历packetMap，取出子流id及对应数据包个数
-//                for (Integer key : packetMap.keySet()) {
-//                    jsonFlow.put("flowID", key);
-//                    if(key != lastFlowId) {
-//                        jsonFlow.put("size", packetMap.get(key));
-//                    }else if(key == lastFlowId) {
-//                        jsonFlow.put("size", packetMap.get(key) + lastPacketSize);
-//                    }
-//                    long timeArrive = System.currentTimeMillis();
-//                    logger.info("call algorithm json {},arrived time {}", jsonFlow.toString(), timeArrive);
-//                    RAC.instance().FLOW_ARRIVE(jsonFlow, timeArrive);
-//                    logger.info("flow send end completed!");
-//                    boolean solve = RAC.instance().TRY_SOLVE();
-//                    if(solve){
-//                        JSONArray arrayGet = RAC.instance().GET_ANSWER_FAST_JSON();
-//                        if(arrayGet != null && arrayGet.size() > 0){
-//                            try {
-//                                getAnswerFromRacController.startRacPushFlow(arrayGet);
-//                            }catch (Exception e){
-//                                e.printStackTrace();
-//                            }finally {
-//                                long timeComplete = System.currentTimeMillis();
-//                                for (Integer keyComplete : packetMap.keySet()){
-//                                    jsonFlow.put("flowID",keyComplete);
-//                                    RAC.instance().FLOW_COMPLETE(jsonFlow,timeComplete);
-//                                }
-//                            }
-//                        }
-//                        packetMap.clear();
-//                        listFlow.clear();
-//                        logger.info("coflow send completed!");
-//                    }
-//                }
-//            }else{
-//                logger.info("Serious packet loss,trying to resend!");
-//                System.out.println("丢包严重，正在尝试重新发送！");
-//                return;
-//            }
-//        } catch (JsonFormatException e) {
-//            e.printStackTrace();
-//        }
     }
 
 }
