@@ -30,7 +30,7 @@ import java.util.*;
 public class CoFlowPacketProcessingListener implements PacketProcessingListener{
 
     private static int count = 1;
-    private static List listFlow = new ArrayList();
+//    private static List listFlow = new ArrayList();
     private static Map<Integer,List> coflowMap = new HashMap<>();
 
     private static final Logger logger = LoggerFactory.getLogger(CoFlowPacketProcessingListener.class);
@@ -157,39 +157,48 @@ public class CoFlowPacketProcessingListener implements PacketProcessingListener{
         }
 
         if(det_ip != "" && det_ip.equals(dstIp)){
+            List listFlow = new ArrayList();
             if(!coflowMap.containsKey(coFlowID)) {
-                coflowMap.put(coFlowID, new ArrayList());
+                coflowMap.put(coFlowID, listFlow);
             }
             listFlow = coflowMap.get(coFlowID);
             if(listFlow.contains(flowId)){
                 return;
-            }
-            try {
-                long timeArrive = System.currentTimeMillis();
-                RAC.instance().FLOW_ARRIVE(jsonFlow, timeArrive);
-                boolean solve = RAC.instance().TRY_SOLVE();
-                if (solve) {
-                    JSONArray arrayGet = RAC.instance().GET_ANSWER_FAST_JSON();
-                    if (arrayGet != null && arrayGet.size() > 0) {
-                        getAnswerFromRacController.startRacPushFlow(arrayGet);
+            }else {
+                listFlow.add(flowId);
+                try {
+                    long timeArrive = System.currentTimeMillis();
+                    RAC.instance().FLOW_ARRIVE(jsonFlow, timeArrive);
+                    boolean solve = RAC.instance().TRY_SOLVE();
+                    if (solve) {
+                        JSONArray arrayGet = RAC.instance().GET_ANSWER_FAST_JSON();
+                        if (arrayGet != null && arrayGet.size() > 0) {
+                            getAnswerFromRacController.startRacPushFlow(arrayGet);
+                        }
                     }
+                } catch (JsonFormatException e) {
+                    e.printStackTrace();
                 }
-            } catch (JsonFormatException e) {
-                e.printStackTrace();
             }
         }else if(det_ip != "" && !det_ip.equals(dstIp)){
-            if(listFlow.contains(flowId) && coflowMap.get(coFlowID).size() > 0){
-                try {
-                    for (int i = 0; i < coflowMap.get(coFlowID).size(); i++) {
-                        long timeComplete = System.currentTimeMillis();
-                        jsonFlow.put("flowID", coflowMap.get(coFlowID).get(i));
-                        RAC.instance().FLOW_COMPLETE(jsonFlow, timeComplete);
+            if(coflowMap.get(coFlowID).size() > 0){
+                if(coflowMap.get(coFlowID).contains(flowId)){
+                    try {
+                        for (int i = 0; i < coflowMap.get(coFlowID).size(); i++) {
+                            long timeComplete = System.currentTimeMillis();
+                            jsonFlow.put("flowID", coflowMap.get(coFlowID).get(i));
+                            RAC.instance().FLOW_COMPLETE(jsonFlow, timeComplete);
+                        }
+                    }catch (JsonFormatException e){
+                        e.printStackTrace();
+                    }finally {
+                        coflowMap.remove(coFlowID);
                     }
-                }catch (JsonFormatException e){
-                    e.printStackTrace();
-                }finally {
-                    coflowMap.remove(coFlowID);
+                }else{
+                    return;
                 }
+            }else{
+                return;
             }
         }
 //            if(!"lastPacket".equals(lastPacketFlag)){
