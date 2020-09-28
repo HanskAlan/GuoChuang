@@ -30,9 +30,7 @@ import java.util.*;
 public class CoFlowPacketProcessingListener implements PacketProcessingListener{
 
     private static int count = 1;
-    private static int lastFlowId = 0;
     private static List listFlow = new ArrayList();
-    private static Map<Integer,Long> packetMap = new HashMap<>();
     private static Map<Integer,List> coflowMap = new HashMap<>();
 
     private static final Logger logger = LoggerFactory.getLogger(CoFlowPacketProcessingListener.class);
@@ -45,7 +43,7 @@ public class CoFlowPacketProcessingListener implements PacketProcessingListener{
     public void onPacketReceived(PacketReceived notification) {
         ParameterUtil parameterUtil = new ParameterUtil();
         GetAnswerFromRacController getAnswerFromRacController = new GetAnswerFromRacController();
-        RACLog.instance().setPath("F:\\odl\\coflow\\target\\RACLog\\");
+
         if(count == 1){
             JSONObject jsonObject = parameterUtil.initTopologyInfo(Constant.host,Constant.port,Constant.username,
                     Constant.password, Constant.containerName);
@@ -55,6 +53,7 @@ public class CoFlowPacketProcessingListener implements PacketProcessingListener{
                 return;
             }else{
                 try {
+                    RACLog.instance().setPath("F:\\odl\\coflow\\target\\RACLog\\");
                     RAC.instance().INITIAL_RAC(jsonObject);
                     count++;
                     logger.info("Topology initialization completed successfully!");
