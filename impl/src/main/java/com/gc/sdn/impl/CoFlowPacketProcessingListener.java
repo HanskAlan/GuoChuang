@@ -30,9 +30,7 @@ import java.util.*;
 public class CoFlowPacketProcessingListener implements PacketProcessingListener{
 
     private static int count = 1;
-    private static int lastFlowId = 0;
     private static List listFlow = new ArrayList();
-    private static Map<Integer,Long> packetMap = new HashMap<>();
     private static Map<Integer,List> coflowMap = new HashMap<>();
 
     private static final Logger logger = LoggerFactory.getLogger(CoFlowPacketProcessingListener.class);
