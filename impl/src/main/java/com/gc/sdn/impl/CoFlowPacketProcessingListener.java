@@ -193,7 +193,7 @@ public class CoFlowPacketProcessingListener implements PacketProcessingListener{
                 } catch (JsonFormatException e) {
                     e.printStackTrace(); // 我也不知道这种情况怎么办
                 }
-                listFlow.remove(flowId);
+                listFlow.remove(Integer.valueOf(flowId));
                 if(listFlow.size() == 0)coflowMap.remove(coFlowID);
             }
         }
