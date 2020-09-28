@@ -52,7 +52,7 @@ public class CoFlowPacketProcessingListener implements PacketProcessingListener{
                 return;
             }else{
                 try {
-                    RACLog.instance().setPath("D:\\EP3Mulcos_ODL\\target\\RACLog\\");
+                    RACLog.instance().setPath("D:\\EP3Mulcos_ODL\\RACLog\\");
                     RAC.instance().INITIAL_RAC(jsonObject);
                     count++;
                     logger.info("Topology initialization completed successfully!");

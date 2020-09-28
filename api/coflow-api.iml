@@ -7,7 +7,7 @@
           <property key="Bundle-Description" value="OpenDaylight is leading the transformation to Open Software Defined Networking (SDN). For more information, please see https://www.opendaylight.org" />
           <property key="Bundle-Vendor" value="OpenDaylight" />
           <property key="Bundle-DocURL" value="https://www.opendaylight.org" />
-          <property key="Include-Resource" value="META-INF/services/org.opendaylight.yangtools.yang.binding.YangModelBindingProvider=$MODULE_DIR$/target/generated-sources/spi/META-INF/services/org.opendaylight.yangtools.yang.binding.YangModelBindingProvider,META-INF/yang/coflow.yang=$MODULE_DIR$/target/generated-sources/yang/META-INF/yang/coflow.yang,$MODULE_DIR$/target/classes/LICENSE,META-INF/git.properties=-target/classes/META-INF/git.properties" />
+          <property key="Include-Resource" value="META-INF/services/org.opendaylight.yangtools.yang.binding.YangModelBindingProvider=D:/EP3Mulcos_ODL/api/target/generated-sources/spi/META-INF/services/org.opendaylight.yangtools.yang.binding.YangModelBindingProvider,META-INF/yang/coflow.yang=D:/EP3Mulcos_ODL/api/target/generated-sources/yang/META-INF/yang/coflow.yang,D:/EP3Mulcos_ODL/api/target/classes/LICENSE,META-INF/git.properties=-target/classes/META-INF/git.properties" />
           <property key="Bundle-Name" value="ODL :: com.gc.sdn :: coflow-api" />
         </additionalProperties>
         <additionalJARContents />
@@ -21,6 +21,7 @@
       <sourceFolder url="file://$MODULE_DIR$/target/generated-sources/mdsal-binding" isTestSource="false" generated="true" />
       <sourceFolder url="file://$MODULE_DIR$/target/generated-sources/spi" isTestSource="false" generated="true" />
       <sourceFolder url="file://$MODULE_DIR$/target/generated-sources/yang" isTestSource="false" generated="true" />
+      <excludeFolder url="file://$MODULE_DIR$/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />
