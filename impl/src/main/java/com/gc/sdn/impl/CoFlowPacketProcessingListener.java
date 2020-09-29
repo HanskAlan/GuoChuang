@@ -156,7 +156,9 @@ public class CoFlowPacketProcessingListener implements PacketProcessingListener{
         }
 
         // 避免抖动，一条流传输结束一段时间内直接拒绝
-        if(timeMap.containsKey(coFlowID) && timeMap.get(coFlowID).containsKey(flowId) && timeMap.get(coFlowID).get(flowId) < System.currentTimeMillis() + 5000){
+        if(timeMap.containsKey(coFlowID) &&
+                timeMap.get(coFlowID).containsKey(flowId) &&
+                timeMap.get(coFlowID).get(flowId) + 5000 > System.currentTimeMillis()){
             timeMap.get(coFlowID).put(flowId,System.currentTimeMillis());
             return;
         }
