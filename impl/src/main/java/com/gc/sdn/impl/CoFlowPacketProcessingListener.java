@@ -198,7 +198,7 @@ public class CoFlowPacketProcessingListener implements PacketProcessingListener{
                 // 同时在timeMap中记录上次结束的时间，以避免统一体流的反复处理
                 if(!timeMap.containsKey(coFlowID))timeMap.put(coFlowID,new HashMap<>());
                 Map<Integer, Long> flowTimeMap = timeMap.get(coFlowID);
-                flowTimeMap.put(coFlowID,System.currentTimeMillis());
+                flowTimeMap.put(flowId,System.currentTimeMillis());
             } catch (JsonFormatException e) {
                 e.printStackTrace(); // 我也不知道这种情况怎么办
             }
