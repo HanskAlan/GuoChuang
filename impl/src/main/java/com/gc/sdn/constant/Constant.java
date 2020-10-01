@@ -1,10 +1,9 @@
 package com.gc.sdn.constant;
 
+
 /**
- * @Description:
- * @author: pan.wen
- * @date:2020/7/16 13:43
- * @Name: Constant
+ * @author pan.wen
+ * @date 2020/7/16 13:43
  */
 public interface Constant {
 
@@ -18,11 +17,12 @@ public interface Constant {
     public static final Integer FORMAT_ERROR = 415;
     public static final Integer INTEGER_SERVER_ERROR = 500;
 
-    public static final String host = "192.168.2.119";
+//    public static final String host = "192.168.2.119";
+    public static final String host = "30.0.1.3";
     public static final Integer port = 6633;
     public static final String username = "admin";
     public static final String password = "admin";
     public static final String containerName = "default";
 
-
+    public static final String RAC_LOG_PATH = "/home/ftp/RACLog/";
 }
