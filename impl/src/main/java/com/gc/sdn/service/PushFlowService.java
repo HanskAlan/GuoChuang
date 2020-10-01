@@ -12,7 +12,7 @@ import com.gc.sdn.util.OdlUtil;
  * @date:2020/9/9 13:53
  * @Name: GetAnswerFromRacService
  */
-public class GetAnswerFromRacService {
+public class PushFlowService {
 
     FlowJson flowJson = new FlowJson();
 

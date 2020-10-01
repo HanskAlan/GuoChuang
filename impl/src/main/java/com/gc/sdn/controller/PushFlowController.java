@@ -5,7 +5,7 @@ import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.gc.sdn.constant.Constant;
 import com.gc.sdn.constant.ResponseResult;
-import com.gc.sdn.service.GetAnswerFromRacService;
+import com.gc.sdn.service.PushFlowService;
 
 import static com.gc.sdn.util.ParameterUtil.*;
 
@@ -15,9 +15,9 @@ import static com.gc.sdn.util.ParameterUtil.*;
  * @date:2020/9/8 10:54
  * @Name: GetAnswerFromRac
  */
-public class GetAnswerFromRacController {
+public class PushFlowController {
 
-    GetAnswerFromRacService getAnswerFromRacService = new GetAnswerFromRacService();
+    PushFlowService pushFlowService = new PushFlowService();
 
     public ResponseResult startRacPushFlow(JSONArray jsonArray){
         try {
@@ -65,7 +65,7 @@ public class GetAnswerFromRacController {
                                 String[] portOut = linkIdOut.split("-");
                                 String[] strPort = portOut[0].split(":");
                                 out_port = strPort[2];
-                                getAnswerFromRacService.startRacPushFlow(coflow_id,flow_id, rate, in_port, out_port, desSwitchIn, target, p);
+                                pushFlowService.startRacPushFlow(coflow_id,flow_id, rate, in_port, out_port, desSwitchIn, target, p);
                             } else if (p == jsonArrayPathProcess.size() - 3) {
                                 sourMac = jsonArrayPathProcess.getString(p);
                                 String linkIdIn = portMap.get(sourMac + "-" + desSwitchIn);
@@ -80,7 +80,7 @@ public class GetAnswerFromRacController {
                                         out_port = strPort[2];
                                     }
                                 }
-                                getAnswerFromRacService.startRacPushFlow(coflow_id,flow_id, rate, in_port, out_port, desSwitchIn, target, p);
+                                pushFlowService.startRacPushFlow(coflow_id,flow_id, rate, in_port, out_port, desSwitchIn, target, p);
                             } else{
                                 sourMac = jsonArrayPathProcess.getString(p);
                                 String linkIdIn = portMap.get(sourMac + "-" + desSwitchIn);
@@ -90,7 +90,7 @@ public class GetAnswerFromRacController {
                                 String linkIdOut = linkMap.get(desSwitchIn + "-" + desSwitchOut);
                                 String[] portOut = linkIdOut.split(":");
                                 out_port = portOut[2];
-                                getAnswerFromRacService.startRacPushFlow(coflow_id,flow_id, rate, in_port, out_port, desSwitchIn, target, p);
+                                pushFlowService.startRacPushFlow(coflow_id,flow_id, rate, in_port, out_port, desSwitchIn, target, p);
                             }
                         }
                     }else{
@@ -114,7 +114,7 @@ public class GetAnswerFromRacController {
                                 out_port = strPort[2];
                             }
                         }
-                        getAnswerFromRacService.startRacPushFlow(coflow_id,flow_id, rate, in_port, out_port, desSwitchIn, target, 1);
+                        pushFlowService.startRacPushFlow(coflow_id,flow_id, rate, in_port, out_port, desSwitchIn, target, 1);
                     }
                 }
             }
@@ -172,7 +172,7 @@ public class GetAnswerFromRacController {
                                 String[] portOut = linkIdOut.split("-");
                                 String[] strPort = portOut[0].split(":");
                                 out_port = strPort[2];
-                                getAnswerFromRacService.startRacPushFlow(coflow_id,flow_id, rate, in_port, out_port, desSwitchIn, target, p);
+                                pushFlowService.startRacPushFlow(coflow_id,flow_id, rate, in_port, out_port, desSwitchIn, target, p);
                             } else if (p == 2) {
                                 sourMac = jsonArrayPathProcess.getString(p);
                                 String linkIdIn = portMap.get(sourMac + "-" + desSwitchIn);
@@ -187,7 +187,7 @@ public class GetAnswerFromRacController {
                                         out_port = strPort[2];
                                     }
                                 }
-                                getAnswerFromRacService.startRacPushFlow(coflow_id,flow_id, rate, in_port, out_port, desSwitchIn, target, p);
+                                pushFlowService.startRacPushFlow(coflow_id,flow_id, rate, in_port, out_port, desSwitchIn, target, p);
                             } else{
                                 sourMac = jsonArrayPathProcess.getString(p);
                                 String linkIdIn = portMap.get(sourMac + "-" + desSwitchIn);
@@ -197,7 +197,7 @@ public class GetAnswerFromRacController {
                                 String linkIdOut = linkMap.get(desSwitchIn + "-" + desSwitchOut);
                                 String[] portOut = linkIdOut.split(":");
                                 out_port = portOut[2];
-                                getAnswerFromRacService.startRacPushFlow(coflow_id,flow_id, rate, in_port, out_port, desSwitchIn, target, p);
+                                pushFlowService.startRacPushFlow(coflow_id,flow_id, rate, in_port, out_port, desSwitchIn, target, p);
                             }
                         }
                     }else{
@@ -221,7 +221,7 @@ public class GetAnswerFromRacController {
                                 out_port = strPort[2];
                             }
                         }
-                        getAnswerFromRacService.startRacPushFlow(coflow_id,flow_id, rate, in_port, out_port, desSwitchIn, target, 1);
+                        pushFlowService.startRacPushFlow(coflow_id,flow_id, rate, in_port, out_port, desSwitchIn, target, 1);
                     }
                 }
             }

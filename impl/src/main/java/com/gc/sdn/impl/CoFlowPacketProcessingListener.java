@@ -10,11 +10,12 @@ package com.gc.sdn.impl;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.gc.sdn.constant.Constant;
-import com.gc.sdn.controller.GetAnswerFromRacController;
+import com.gc.sdn.controller.PushFlowController;
 import com.gc.sdn.util.ParameterUtil;
 import com.routineAlgorithm.controller.RAC;
 import com.routineAlgorithm.controller.RACLog;
 import com.routineAlgorithm.json.JsonFormatException;
+import com.routineAlgorithm.solver.*;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketProcessingListener;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketReceived;
 import org.slf4j.Logger;
@@ -43,7 +44,7 @@ public class CoFlowPacketProcessingListener implements PacketProcessingListener{
     @Override
     public void onPacketReceived(PacketReceived notification) {
         ParameterUtil parameterUtil = new ParameterUtil();
-        GetAnswerFromRacController getAnswerFromRacController = new GetAnswerFromRacController();
+        PushFlowController pushFlowController = new PushFlowController();
         if(count == 1){
             JSONObject jsonObject = parameterUtil.initTopologyInfo(Constant.host,Constant.port,Constant.username,
                     Constant.password, Constant.containerName);
@@ -55,6 +56,11 @@ public class CoFlowPacketProcessingListener implements PacketProcessingListener{
                 try {
                     RACLog.instance().setPath("D:\\EP3Mulcos_ODL\\RACLog\\");
                     RAC.instance().INITIAL_RAC(jsonObject);
+//                    RAC.instance().setSolver(new OMCoflowSolver()); // 这个是默认的
+                    RAC.instance().setSolver(new OMCoflowRSolver());
+//                    RAC.instance().setSolver(new OMCoflowASolver());
+//                    RAC.instance().setSolver(new RapierSolver());
+//                    RAC.instance().setSolver(new RandomizeRapierSolver());
                     count++;
                     logger.info("Topology initialization completed successfully!");
                     return;
@@ -174,7 +180,7 @@ public class CoFlowPacketProcessingListener implements PacketProcessingListener{
                 if (RAC.instance().ARRIVE_AND_TRY(jsonFlow,System.currentTimeMillis())) {
                     JSONArray arrayGet = RAC.instance().GET_ANSWER_FAST_JSON();
                     if (arrayGet != null && arrayGet.size() > 0) {
-                        getAnswerFromRacController.startRacPushFlow(arrayGet);
+                        pushFlowController.startRacPushFlow(arrayGet);
                     }
                 }
             } catch (JsonFormatException e) {
@@ -190,7 +196,7 @@ public class CoFlowPacketProcessingListener implements PacketProcessingListener{
                 if (RAC.instance().COMPLETE_AND_TRY(jsonFlow, System.currentTimeMillis())) {
                     JSONArray arrayGet = RAC.instance().GET_ANSWER_FAST_JSON();
                     if (arrayGet != null && arrayGet.size() > 0) {
-                        getAnswerFromRacController.startRacPushFlow(arrayGet);
+                        pushFlowController.startRacPushFlow(arrayGet);
                     }
                 }
                 listFlow.remove(Integer.valueOf(flowId));
