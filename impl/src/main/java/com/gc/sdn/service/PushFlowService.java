@@ -27,13 +27,13 @@ public class PushFlowService {
 
         int bandwidth = new Double(rate*1000).intValue();
         // 调用odl接口下发meter表
-        String meterUri = apiUri+nodeId+"/meter/"+co_flow_id + flow_id;
+        String meterUri = apiUri + nodeId + "/meter/" + Constant.hash(co_flow_id,flow_id);
         System.out.println(meterUri);
         JSONObject jsonObjectMeter = meterJson.getMeterJson(co_flow_id,bandwidth,flow_id,p);
         odlUtil.installMeter(jsonObjectMeter,meterUri);
 
         // 调用odl接口下发流
-        String flowUri = apiUri+nodeId+"/flow-node-inventory:table/0/flow/"+flow_id;
+        String flowUri = apiUri + nodeId + "/flow-node-inventory:table/0/flow/" + Constant.hash(co_flow_id,flow_id);
         System.out.println(flowUri);
         JSONObject jsonObjectFlow = flowJson.getFlowJson(co_flow_id,flow_id,target,in_port,out_port,p);
         odlUtil.installFlow(jsonObjectFlow, flowUri);

@@ -1,6 +1,7 @@
 package com.gc.sdn.util;
 
 import com.alibaba.fastjson.JSONObject;
+import com.gc.sdn.constant.Constant;
 import org.springframework.stereotype.Service;
 
 /**
@@ -12,10 +13,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class MeterJson {
 
-    public JSONObject getMeterJson(int co_flow_id,int rate, int meter_id, int p){
+    public JSONObject getMeterJson(int coflowId,int rate, int flowId, int p){
         JSONObject jsonObjectMeter = new JSONObject();
-        jsonObjectMeter.put("meter-id",String.valueOf(co_flow_id)+meter_id);
-        jsonObjectMeter.put("meter-name","meter"+meter_id+p);
+        jsonObjectMeter.put("meter-id",String.valueOf(Constant.hash(coflowId,flowId)));
+        jsonObjectMeter.put("meter-name","meter" + Constant.hash(coflowId,flowId) + p);
         jsonObjectMeter.put("flags","meter-kbps");
 
         JSONObject jsonObjectHeader = new JSONObject();

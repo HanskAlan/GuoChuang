@@ -3,6 +3,7 @@ package com.gc.sdn.util;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.gc.sdn.constant.Constant;
 import org.springframework.stereotype.Service;
 
 /**
@@ -20,9 +21,13 @@ public class FlowJson {
         JSONArray jsonArrayInventory = new JSONArray();
 
         JSONObject jsonObjectInventory = new JSONObject();
-        jsonObjectInventory.put("id",flow_id);
+        jsonObjectInventory.put("id",Constant.hash(co_flow_id,flow_id));
+        jsonObjectInventory.put("table_id",0);
         jsonObjectInventory.put("flow-name","");
         jsonObjectInventory.put("cookie",256);
+        jsonObjectInventory.put("priority",Constant.priority);
+        jsonObjectInventory.put("hard-timeout",Constant.hardTimeOut);
+        jsonObjectInventory.put("idle-timeout", Constant.idleTimeOut);
 
 
         /* 下面需要的是这种形式
@@ -76,7 +81,7 @@ public class FlowJson {
         meterInstruction
                 .fluentPut("order",0)
                 .fluentPut("meter",new JSONObject()
-                        .fluentPut("meter-id",String.valueOf(co_flow_id) + flow_id)
+                        .fluentPut("meter-id",String.valueOf(Constant.hash(co_flow_id,flow_id)))
                 );
 
         // apply-action 的 instruction
@@ -96,13 +101,13 @@ public class FlowJson {
 
 
 
-        jsonObjectInventory.put("priority",666);
-        jsonObjectInventory.put("table_id",0);
+
         // 匹配项
         jsonObjectInventory.put("match", new JSONObject()
                 .fluentPut("ipv4-destination", target + "/32") // 额外的过滤项
+                // 讲一讲下面这一项，如果要正确使用的话应该是以e7-eth1 或者c1-eth10的形式使用，虽然处理这个东西比较麻烦
                 .fluentPut("in-port", in_port) // 额外的过滤项
-                .fluentPut("udp-source-port",65535 - (60 * co_flow_id + flow_id)) // 这个是核心
+                .fluentPut("udp-source-port",65535 - Constant.hash(co_flow_id,flow_id)) // 这个是核心
                 .fluentPut("udp-destination-port",5001) // 这个也是
                 .fluentPut("ethernet-match", new JSONObject() // 这个是必须的
                         .fluentPut("ethernet-type",new JSONObject()

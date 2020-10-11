@@ -6,23 +6,36 @@ package com.gc.sdn.constant;
  * @date 2020/7/16 13:43
  */
 public interface Constant {
+    String RESULT_SUCCESS_DESC = "成功";
+    String RESULT_FAIL_DESC = "失败";
 
-    public static final String RESULT_SUCCESS_DESC = "成功";
-    public static final String RESULT_FAIL_DESC = "失败";
+    Integer RESULT_SUCCESS_CODE = 200;
+    Integer RESULT_FAIL_CODE = 401;
+    Integer REQUEST_INVALID = 400;
+    Integer NOT_FOUND = 404;
+    Integer FORMAT_ERROR = 415;
+    Integer INTEGER_SERVER_ERROR = 500;
 
-    public static final Integer RESULT_SUCCESS_CODE = 200;
-    public static final Integer RESULT_FAIL_CODE = 401;
-    public static final Integer REQUEST_INVALID = 400;
-    public static final Integer NOT_FOUND = 404;
-    public static final Integer FORMAT_ERROR = 415;
-    public static final Integer INTEGER_SERVER_ERROR = 500;
+    String host = "127.0.0.1";
+//    String host = "192.168.2.119";
+//    String host = "30.0.1.3";
 
-//    public static final String host = "192.168.2.119";
-    public static final String host = "30.0.1.3";
-    public static final Integer port = 6633;
-    public static final String username = "admin";
-    public static final String password = "admin";
-    public static final String containerName = "default";
+    Integer port = 6633;
+    String username = "admin";
+    String password = "admin";
+    String containerName = "default";
 
-    public static final String RAC_LOG_PATH = "/home/ftp/RACLog/";
+    String RAC_LOG_PATH = "/home/ftp/RACLog/";
+
+    static int hash(int coflowId,int flowId){
+        return coflowId * 60 + flowId;
+    }
+
+
+
+    // 流表相关的参数
+    int priority = 102;
+    int dropPriority = 101;
+    int idleTimeOut = 10000;
+    int hardTimeOut = 10000;
 }
