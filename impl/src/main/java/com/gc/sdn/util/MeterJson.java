@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class MeterJson {
 
-    public JSONObject getMeterJson(int coflowId,int rate, int flowId, int p){
+    public static JSONObject getMeterJson(int coflowId,int rate, int flowId, int p){
         JSONObject jsonObjectMeter = new JSONObject();
         jsonObjectMeter.put("meter-id",String.valueOf(Constant.hash(coflowId,flowId)));
         jsonObjectMeter.put("meter-name","meter" + Constant.hash(coflowId,flowId) + p);

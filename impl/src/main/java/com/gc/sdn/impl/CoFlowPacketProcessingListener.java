@@ -11,6 +11,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.gc.sdn.constant.Constant;
 import com.gc.sdn.controller.PushFlowController;
+import com.gc.sdn.service.PushFlowService;
 import com.gc.sdn.util.ParameterUtil;
 import com.routineAlgorithm.controller.RAC;
 import com.routineAlgorithm.controller.RACLog;
@@ -44,7 +45,6 @@ public class CoFlowPacketProcessingListener implements PacketProcessingListener{
     @Override
     public void onPacketReceived(PacketReceived notification) {
         ParameterUtil parameterUtil = new ParameterUtil();
-        PushFlowController pushFlowController = new PushFlowController();
         if(count == 1){
             JSONObject jsonObject = parameterUtil.initTopologyInfo(Constant.host,Constant.port,Constant.username,
                     Constant.password, Constant.containerName);
@@ -171,34 +171,41 @@ public class CoFlowPacketProcessingListener implements PacketProcessingListener{
             return;
         }
 
+        // 第一次接受正向数据包
         if(payloadDstIp.equals(dstIp)){
-            if(!coflowMap.containsKey(coFlowID)) {
+            // 在内存中记录该类数据包的消息
+            if(!coflowMap.containsKey(coFlowID))
                 coflowMap.put(coFlowID, new ArrayList<>());
-            }
             ArrayList<Integer> listFlow = coflowMap.get(coFlowID);
             if(listFlow.contains(flowId)) return;
             listFlow.add(flowId);
+
+            // 添加Drop流表，抑制传输，以避免过流正式下发流表之前的传输
+            PushFlowService.pushDropFlow(coFlowID,flowId,payloadSrcIp,payloadDstIp);
             try {
+                // 假如RAC返回了一个方案，则安排传输
                 if (RAC.instance().ARRIVE_AND_TRY(jsonFlow,System.currentTimeMillis())) {
                     JSONArray arrayGet = RAC.instance().GET_ANSWER_FAST_JSON();
                     if (arrayGet != null && arrayGet.size() > 0) {
-                        pushFlowController.startRacPushFlow(arrayGet);
+                        PushFlowController.startRacPushFlow(arrayGet);
                     }
                 }
             } catch (JsonFormatException e) {
                 e.printStackTrace();
             }
         }else if(payloadSrcIp.equals(dstIp)){// 假如包向着payloadSrcIp发送过去
-            // 假如coflow不存在或者flow不存在，就不是相应的ack信号
+            // 假如coflow不存在或者flow不存在，就不是相应的ack信号，过滤
             if(!coflowMap.containsKey(coFlowID))return;
             ArrayList<Integer> listFlow = coflowMap.get(coFlowID);
             if(!listFlow.contains(flowId))return;
+
+            // 接收到反向应答信号
             try {
                 // 流传输完成，但是其他的还没完成（你之前把一个coflow的全部flow都删掉了）
                 if (RAC.instance().COMPLETE_AND_TRY(jsonFlow, System.currentTimeMillis())) {
                     JSONArray arrayGet = RAC.instance().GET_ANSWER_FAST_JSON();
                     if (arrayGet != null && arrayGet.size() > 0) {
-                        pushFlowController.startRacPushFlow(arrayGet);
+                        PushFlowController.startRacPushFlow(arrayGet);
                     }
                 }
                 listFlow.remove(Integer.valueOf(flowId));

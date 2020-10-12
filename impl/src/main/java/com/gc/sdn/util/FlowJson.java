@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class FlowJson {
 
-    public JSONObject getFlowJson(int co_flow_id,int flow_id, String target, String in_port, String output,int p){
+    public static JSONObject getFlowJson(int co_flow_id,int flow_id, String target, String in_port, String output,int p){
 
         JSONObject jsonObjectAll = new JSONObject();
         JSONArray jsonArrayInventory = new JSONArray();
@@ -118,6 +118,67 @@ public class FlowJson {
                         .fluentPut("ip-protocol",17)
 //                        .fluentPut("ip-dscp",8)
 //                        .fluentPut("ip-ecn",3)
+                )
+        );
+        jsonArrayInventory.add(jsonObjectInventory);
+
+        jsonObjectAll.put("flow-node-inventory:flow",jsonArrayInventory);
+
+        return jsonObjectAll;
+    }
+
+
+    public static JSONObject getDropFlowJson(int co_flow_id,int flow_id, String dstIp){
+        JSONObject jsonObjectAll = new JSONObject();
+        JSONArray jsonArrayInventory = new JSONArray();
+
+        JSONObject jsonObjectInventory = new JSONObject();
+        jsonObjectInventory.put("id",Constant.hash(co_flow_id,flow_id));
+        jsonObjectInventory.put("table_id",0);
+        jsonObjectInventory.put("flow-name","");
+        jsonObjectInventory.put("cookie",256);
+        jsonObjectInventory.put("priority",Constant.dropPriority);
+        jsonObjectInventory.put("hard-timeout",Constant.hardTimeOut);
+        jsonObjectInventory.put("idle-timeout", Constant.idleTimeOut);
+
+        // 设置整体状态
+        JSONObject actionsInstruction = new JSONObject();
+        jsonObjectInventory.put("instructions", new JSONObject()
+                .fluentPut("instruction", new JSONArray()
+                        .fluentAdd(actionsInstruction)
+                )
+        );
+
+        // apply-action 的 instruction
+        actionsInstruction
+                .fluentPut("order",0)
+                .fluentPut("apply-actions",new JSONObject()
+                        .fluentPut("action",new JSONArray()
+                                .fluentAdd(new JSONObject()
+                                        .fluentPut("order",0)
+                                        .fluentPut("drop-action",new JSONObject())
+                                )
+                        )
+                );
+
+
+
+
+
+        // 匹配项
+        jsonObjectInventory.put("match", new JSONObject()
+                .fluentPut("ipv4-destination", dstIp + "/32") // 额外的过滤项
+//                // 讲一讲下面这一项，如果要正确使用的话应该是以e7-eth1 或者c1-eth10的形式使用，虽然处理这个东西比较麻烦
+//                .fluentPut("in-port", in_port) // 额外的过滤项
+                .fluentPut("udp-source-port",65535 - Constant.hash(co_flow_id,flow_id)) // 这个是核心
+                .fluentPut("udp-destination-port",5001) // 这个也是
+                .fluentPut("ethernet-match", new JSONObject() // 这个是必须的
+                        .fluentPut("ethernet-type",new JSONObject()
+                                .fluentPut("type",2048)
+                        )
+                )
+                .fluentPut("ip-match",new JSONObject() // 这个也是必须的，不知道为什么
+                                .fluentPut("ip-protocol",17)
                 )
         );
         jsonArrayInventory.add(jsonObjectInventory);

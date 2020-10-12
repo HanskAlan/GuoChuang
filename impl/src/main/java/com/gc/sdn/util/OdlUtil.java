@@ -82,14 +82,13 @@ public class OdlUtil {
     * @params: [meterXml, uri]
     * @return: java.lang.String
     **/
-    public String installMeter(JSONObject meterJson, String uri){
+    public static String installMeter(JSONObject meterJson, String uri){
         String json = meterJson.toJSONString();
         System.out.println("json=="+meterJson);
         Map<String,String >headers = new HashMap<>();
         headers.put("Content-type","application/json");
         try {
-            String str = HttpRequestToOdl.sendPut(uri,headers,json);
-            return str;
+            return HttpRequestToOdl.sendPut(uri,headers,json);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -98,14 +97,13 @@ public class OdlUtil {
     /**
      * 下发流表
      * */
-    public String installFlow(JSONObject flowJson, String uri){
+    public static String installFlow(JSONObject flowJson, String uri){
         String json = flowJson.toJSONString();
         System.out.println("json=="+json);
         Map<String,String >headers = new HashMap<>();
         headers.put("Content-type","application/json");
         try {
-            String str = HttpRequestToOdl.sendPut(uri,headers,json);
-            return str;
+            return HttpRequestToOdl.sendPut(uri,headers,json);
         }catch (Exception e){
             e.printStackTrace();
         }

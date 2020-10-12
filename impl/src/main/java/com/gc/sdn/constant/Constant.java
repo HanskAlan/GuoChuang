@@ -25,7 +25,8 @@ public interface Constant {
     String password = "admin";
     String containerName = "default";
 
-    String RAC_LOG_PATH = "/home/ftp/RACLog/";
+//    String RAC_LOG_PATH = "/home/ftp/RACLog/";
+    String RAC_LOG_PATH = "D:/EP3Mulcos_ODL/target/RACLog/";
 
     static int hash(int coflowId,int flowId){
         return coflowId * 60 + flowId;
@@ -34,8 +35,8 @@ public interface Constant {
 
 
     // 流表相关的参数
-    int priority = 102;
-    int dropPriority = 101;
+    int priority = 102; // 注意，priority必须大于dropPriority
+    int dropPriority = priority - 1;
     int idleTimeOut = 10000;
     int hardTimeOut = 10000;
 }
