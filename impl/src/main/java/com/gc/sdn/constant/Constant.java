@@ -37,6 +37,6 @@ public interface Constant {
     // 流表相关的参数
     int priority = 102; // 注意，priority必须大于dropPriority
     int dropPriority = priority - 1;
-    int idleTimeOut = 10000;
-    int hardTimeOut = 10000;
+    int idleTimeOut = 10;
+    int hardTimeOut = 3600; // 1h
 }

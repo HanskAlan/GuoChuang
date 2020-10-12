@@ -106,7 +106,7 @@ public class FlowJson {
         jsonObjectInventory.put("match", new JSONObject()
                 .fluentPut("ipv4-destination", target + "/32") // 额外的过滤项
                 // 讲一讲下面这一项，如果要正确使用的话应该是以e7-eth1 或者c1-eth10的形式使用，虽然处理这个东西比较麻烦
-                .fluentPut("in-port", in_port) // 额外的过滤项
+//                .fluentPut("in-port", in_port) // 额外的过滤项
                 .fluentPut("udp-source-port",65535 - Constant.hash(co_flow_id,flow_id)) // 这个是核心
                 .fluentPut("udp-destination-port",5001) // 这个也是
                 .fluentPut("ethernet-match", new JSONObject() // 这个是必须的

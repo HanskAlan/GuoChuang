@@ -56,9 +56,9 @@ public class CoFlowPacketProcessingListener implements PacketProcessingListener{
                 try {
                     RACLog.instance().setPath(Constant.RAC_LOG_PATH);
                     RAC.instance().INITIAL_RAC(jsonObject);
-                    RAC.instance().setSolver(new ECMPSolver());
-                    System.out.println("Choose ECMP solver");
-//                    RAC.instance().setSolver(new OMCoflowSolver()); // 这个是默认的
+                    System.out.println("Choose OMCoflow solver");
+//                    RAC.instance().setSolver(new ECMPSolver());
+                    RAC.instance().setSolver(new OMCoflowSolver()); // 这个是默认的
 //                    RAC.instance().setSolver(new OMCoflowRSolver());
 //                    RAC.instance().setSolver(new OMCoflowASolver());
 //                    RAC.instance().setSolver(new RapierSolver());
