@@ -6,12 +6,7 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * @Description:
- * @author: pan.wen
- * @date:2020/7/16 16:10
- * @Name: OdlUtil
- */
+
 public class OdlUtil {
     private String url;
     private String username;
@@ -58,13 +53,7 @@ public class OdlUtil {
         return str;
     }
 
-    /**
-    * @Author: pan.wen
-    * @Description:
-    * @Date: 2020/8/3  20:36
-    * @params: []
-    * @return: java.lang.String
-    **/
+
     public String getTopologyInfo(String uri){
         String str = null;
         try {
@@ -75,13 +64,7 @@ public class OdlUtil {
         return str;
     }
 
-    /**
-    * @Author: pan.wen
-    * @Description: 下发meter表
-    * @Date: 2020/7/21  14:55
-    * @params: [meterXml, uri]
-    * @return: java.lang.String
-    **/
+
     public static String installMeter(JSONObject meterJson, String uri){
         String json = meterJson.toJSONString();
         System.out.println("json=="+meterJson);

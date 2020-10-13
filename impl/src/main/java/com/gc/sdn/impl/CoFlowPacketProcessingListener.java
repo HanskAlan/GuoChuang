@@ -22,13 +22,11 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.Pa
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 
-/**
- * @author pan.wen
- */
+
 public class CoFlowPacketProcessingListener implements PacketProcessingListener{
 
     private static int count = 1;
@@ -118,49 +116,45 @@ public class CoFlowPacketProcessingListener implements PacketProcessingListener{
 //        long lastPacketSize = 0;
         String payloadDstIp = "";
         String payloadSrcIp = "";
-        try {
-            byte[] strBuffer = PacketParsing.extractStrInfo(payload);
-            String str = new String(strBuffer, "utf-8");
-            str = str.replaceAll("[\u0000]","");
-            if(!Objects.equals(str, "")){
-                String[] s = str.split(";");
-                String[] strCoFlowId = s[0].split("=");
-                coFlowID = Integer.parseInt(strCoFlowId[1]);
-                String[] strFlowCount = s[1].split("=");
-                flowCount = Integer.parseInt(strFlowCount[1]);
-                String[] strFLowId = s[2].split("=");
-                flowId = Integer.parseInt(strFLowId[1]);
-                String[] strDataSize = s[3].split("=");
-                dataSize = Long.parseLong(strDataSize[1]);
-                String[] strSrcIp = s[4].split("=");
-                payloadSrcIp = strSrcIp[1];
-                String[] strDetIp = s[5].split("=");
-                payloadDstIp = strDetIp[1];
-                if(flowCount != 0){
-                    jsonFlow.put("coflowSize",flowCount);
-                }else{
-                    return;
-                }
-                if(coFlowID != 0){
-                    jsonFlow.put("coflowID",coFlowID);
-                }else{
-                    return;
-                }
-                if(flowId != 0){
-                    jsonFlow.put("flowID",flowId);
-                }else{
-                    return;
-                }
-                if(dataSize != 0){
-                    jsonFlow.put("size",dataSize);
-                }else {
-                    return;
-                }
+        byte[] strBuffer = PacketParsing.extractStrInfo(payload);
+        String str = new String(strBuffer, StandardCharsets.UTF_8);
+        str = str.replaceAll("[\u0000]","");
+        if(!Objects.equals(str, "")){
+            String[] s = str.split(";");
+            String[] strCoFlowId = s[0].split("=");
+            coFlowID = Integer.parseInt(strCoFlowId[1]);
+            String[] strFlowCount = s[1].split("=");
+            flowCount = Integer.parseInt(strFlowCount[1]);
+            String[] strFLowId = s[2].split("=");
+            flowId = Integer.parseInt(strFLowId[1]);
+            String[] strDataSize = s[3].split("=");
+            dataSize = Long.parseLong(strDataSize[1]);
+            String[] strSrcIp = s[4].split("=");
+            payloadSrcIp = strSrcIp[1];
+            String[] strDetIp = s[5].split("=");
+            payloadDstIp = strDetIp[1];
+            if(flowCount != 0){
+                jsonFlow.put("coflowSize",flowCount);
             }else{
                 return;
             }
-        }catch (UnsupportedEncodingException e){
-            e.printStackTrace();
+            if(coFlowID != 0){
+                jsonFlow.put("coflowID",coFlowID);
+            }else{
+                return;
+            }
+            if(flowId != 0){
+                jsonFlow.put("flowID",flowId);
+            }else{
+                return;
+            }
+            if(dataSize != 0){
+                jsonFlow.put("size",dataSize);
+            }else {
+                return;
+            }
+        }else{
+            return;
         }
 
         // 避免抖动，一条流传输结束一段时间内直接拒绝

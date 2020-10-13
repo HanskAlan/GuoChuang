@@ -11,12 +11,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * @Description:
- * @author: pan.wen
- * @date:2020/8/3 16:43
- * @Name: ParameterUtil
- */
+
 @Service
 public class ParameterUtil {
 
@@ -26,35 +21,17 @@ public class ParameterUtil {
     public static Map<String, String> portMap = new HashMap<>();
 
 
-    /**
-    * @Author: pan.wen
-    * @Description: 获取出端口
-    * @Date: 2020/8/3  16:44
-    * @params: []
-    * @return: java.lang.String
-    **/
+
     public String getPort(){
         return "";
     }
 
-    /**
-    * @Author: pan.wen
-    * @Description: 获取设备id
-    * @Date: 2020/8/3  16:45
-    * @params: []
-    * @return: java.lang.String
-    **/
+
     public String getNode(){
         return "";
     }
 
-    /**
-    * @Author: pan.wen
-    * @Description: 获取topo信息
-    * @Date: 2020/8/3  16:47
-    * @params: []
-    * @return: java.lang.String
-    **/
+
     public Map getPortInfo(){
 
         Map hashMap = null;
@@ -80,13 +57,7 @@ public class ParameterUtil {
         return hashMap;
     }
 
-    /**
-    * @Author: pan.wen
-    * @Description: 获取链路信息
-    * @Date: 2020/8/3  21:36
-    * @params: []
-    * @return: java.util.Map
-    **/
+
     public Map getLinkInfo(){
 
         Map hashMap = null;
@@ -112,13 +83,7 @@ public class ParameterUtil {
         return hashMap;
     }
 
-    /**
-    * @Author: pan.wen
-    * @Description: 初始化topo信息
-    * @Date: 2020/9/1  11:36
-    * @params: []
-    * @return: com.alibaba.fastjson.JSONObject
-    **/
+
     public JSONObject initTopologyInfo(String host,Integer port,String username,String password,String containerName){
         JSONObject json = new JSONObject();
         try{
@@ -166,7 +131,7 @@ public class ParameterUtil {
                 return null;
             }
             JSONArray arrayEdges = new JSONArray();
-            Set<String> setStr = new HashSet<String>();
+            Set<String> setStr = new HashSet<>();
             for(int j=0; j<arrayLink.size(); j++){
                 JSONObject jsonLink = arrayLink.getJSONObject(j);
                 String linkID = jsonLink.getString("link-id");

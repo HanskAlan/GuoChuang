@@ -4,12 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.gc.sdn.constant.Constant;
 import org.springframework.stereotype.Service;
 
-/**
- * @Description:
- * @author: pan.wen
- * @date:2020/8/3 15:26
- * @Name: MeterJson
- */
+
 @Service
 public class MeterJson {
 

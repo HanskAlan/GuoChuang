@@ -6,12 +6,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.gc.sdn.constant.Constant;
 import org.springframework.stereotype.Service;
 
-/**
- * @Description:
- * @author: pan.wen
- * @date: 2020/7/17 16:08
- * @Name: FlowJson
- */
 @Service
 public class FlowJson {
 

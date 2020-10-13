@@ -1,10 +1,7 @@
 package com.gc.sdn.constant;
 
 
-/**
- * @author pan.wen
- * @date 2020/7/16 13:43
- */
+
 public interface Constant {
     String RESULT_SUCCESS_DESC = "成功";
     String RESULT_FAIL_DESC = "失败";
@@ -17,22 +14,19 @@ public interface Constant {
     Integer INTEGER_SERVER_ERROR = 500;
 
     String host = "127.0.0.1";
-//    String host = "192.168.2.119";
-//    String host = "30.0.1.3";
 
     Integer port = 6633;
     String username = "admin";
     String password = "admin";
     String containerName = "default";
 
+    String RAC_LOG_PATH = "/home/aberror/Desktop/RACLog/";
 //    String RAC_LOG_PATH = "/home/ftp/RACLog/";
-    String RAC_LOG_PATH = "D:/EP3Mulcos_ODL/target/RACLog/";
+//    String RAC_LOG_PATH = "D:/EP3Mulcos_ODL/target/RACLog/";
 
     static int hash(int coflowId,int flowId){
         return coflowId * 60 + flowId;
     }
-
-
 
     // 流表相关的参数
     int priority = 102; // 注意，priority必须大于dropPriority

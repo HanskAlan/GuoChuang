@@ -9,12 +9,7 @@ import com.gc.sdn.service.PushFlowService;
 
 import static com.gc.sdn.util.ParameterUtil.*;
 
-/**
- * @Description:
- * @author: pan.wen
- * @date: 2020/9/8 10:54
- * @Name: GetAnswerFromRac
- */
+
 public class PushFlowController {
     public static ResponseResult startRacPushFlow(JSONArray jsonArray){
         try {

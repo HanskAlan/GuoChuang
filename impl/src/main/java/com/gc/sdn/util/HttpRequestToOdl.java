@@ -10,12 +10,7 @@ import java.net.URLConnection;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @Description:
- * @author: pan.wen
- * @date:2020/7/16 16:04
- * @Name: HttpRequest
- */
+
 public class HttpRequestToOdl {
     private static String basicAuth = null;
 

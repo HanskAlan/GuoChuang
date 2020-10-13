@@ -2,12 +2,7 @@ package com.gc.sdn.util;
 
 import org.springframework.stereotype.Service;
 
-/**
- * @Description:
- * @author: pan.wen
- * @date:2020/7/21 14:15
- * @Name: MeterXml
- */
+
 @Service
 public class MeterXml {
 
@@ -34,8 +29,6 @@ public class MeterXml {
         meterXml.append("<meter-name>Foo</meter-name>");
         meterXml.append("</meter>");
 
-        String xml = meterXml.toString();
-
-        return xml;
+        return meterXml.toString();
     }
 }

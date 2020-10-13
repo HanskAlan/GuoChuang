@@ -15,9 +15,6 @@ import org.opendaylight.yangtools.yang.binding.NotificationListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * @author yy
- */
 public class CoFlowProvider {
 
     private static final Logger LOG = LoggerFactory.getLogger(CoFlowProvider.class);

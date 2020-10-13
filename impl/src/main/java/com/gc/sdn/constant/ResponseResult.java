@@ -2,12 +2,7 @@ package com.gc.sdn.constant;
 
 import java.io.Serializable;
 
-/**
- * @Description:
- * @author: pan.wen
- * @date:2020/7/16 14:38
- * @Name: ResponseResult
- */
+
 public class ResponseResult implements Serializable {
     private static final long serialVersionUID = 1L;
     private int resultCode;

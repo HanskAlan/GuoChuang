@@ -7,12 +7,7 @@ import com.gc.sdn.util.MeterJson;
 import com.gc.sdn.util.OdlUtil;
 import static com.gc.sdn.util.ParameterUtil.*;
 
-/**
- * @Description:
- * @author: pan.wen
- * @date:2020/9/9 13:53
- * @Name: GetAnswerFromRacService
- */
+
 public class PushFlowService {
 
     public static void pushFlowAndMeter(int co_flow_id, int flow_id, Double rate, String in_port, String out_port, String nodeId, String target, int p){
