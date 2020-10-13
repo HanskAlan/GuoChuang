@@ -12,6 +12,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.gc.sdn.constant.Constant;
 import com.gc.sdn.controller.PushFlowController;
 import com.gc.sdn.service.PushFlowService;
+import com.gc.sdn.util.OdlUtil;
 import com.gc.sdn.util.ParameterUtil;
 import com.routineAlgorithm.controller.RAC;
 import com.routineAlgorithm.controller.RACLog;
@@ -30,7 +31,6 @@ import java.util.*;
 public class CoFlowPacketProcessingListener implements PacketProcessingListener{
 
     private static int count = 1;
-//    private static List listFlow = new ArrayList();
     private static final Map<Integer,ArrayList<Integer>> coflowMap = new HashMap<>();
     private static final Map<Integer,Map<Integer,Long>> timeMap = new HashMap<>(); // 记录上次结束的时间
 
@@ -52,6 +52,7 @@ public class CoFlowPacketProcessingListener implements PacketProcessingListener{
                 return;
             }else{
                 try {
+                    closeOdlDefaultConfig();
                     RACLog.instance().setPath(Constant.RAC_LOG_PATH);
                     RAC.instance().INITIAL_RAC(jsonObject);
                     System.out.println("Choose OMCoflow solver");
@@ -212,6 +213,21 @@ public class CoFlowPacketProcessingListener implements PacketProcessingListener{
                 e.printStackTrace(); // 我也不知道这种情况怎么办
             }
         }
+    }
+
+
+    /**
+     * 关掉一些非常弱智的默认设置，他们会影响rac的运作,参考资料
+     * https://docs.opendaylight.org/en/stable-carbon/user-guide/l2switch-user-guide.html?highlight=600#configurable-parameters-in-l2-switch-main
+     * is-learning-only-mode
+     */
+    private void closeOdlDefaultConfig(){
+        String url = "http://" + Constant.host +":8181/restconf/config/l2switch-config:l2switch-config/";
+        String json =
+                "{\"l2switch-config\":" +
+                    "{\"is-learning-only-mode\":false}" +
+                "}";
+        OdlUtil.install(json,url);
     }
 
 }

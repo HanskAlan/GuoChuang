@@ -19,15 +19,15 @@ public class PushFlowService {
         int bandwidth = new Double(rate*1000).intValue();
         // 调用odl接口下发meter表
         String meterUri = apiUri + nodeId + "/meter/" + Constant.hash(co_flow_id,flow_id);
-        System.out.println(meterUri);
+//        System.out.println(meterUri);
         JSONObject jsonObjectMeter = MeterJson.getMeterJson(co_flow_id,bandwidth,flow_id,p);
-        OdlUtil.installMeter(jsonObjectMeter,meterUri);
+        OdlUtil.install(jsonObjectMeter,meterUri);
 
         // 调用odl接口下发流
         String flowUri = apiUri + nodeId + "/flow-node-inventory:table/0/flow/" + Constant.hash(co_flow_id,flow_id);
-        System.out.println(flowUri);
+//        System.out.println(flowUri);
         JSONObject jsonObjectFlow = FlowJson.getFlowJson(co_flow_id,flow_id,target,in_port,out_port,p);
-        OdlUtil.installFlow(jsonObjectFlow, flowUri);
+        OdlUtil.install(jsonObjectFlow, flowUri);
     }
 
     public static void pushDropFlow(int co_flow_id, int flow_id, String srcIp, String dstIp){
@@ -43,8 +43,8 @@ public class PushFlowService {
 
         // 调用odl接口下发流
         String flowUri = apiUri + nodeId + "/flow-node-inventory:table/0/flow/" + Constant.hash(co_flow_id,flow_id);
-        System.out.println(flowUri);
-        OdlUtil.installFlow(
+//        System.out.println(flowUri);
+        OdlUtil.install(
                 FlowJson.getDropFlowJson(co_flow_id,flow_id,dstIp),
                 flowUri
         );

@@ -64,10 +64,12 @@ public class OdlUtil {
         return str;
     }
 
-
-    public static String installMeter(JSONObject meterJson, String uri){
-        String json = meterJson.toJSONString();
-        System.out.println("json=="+meterJson);
+    /**
+     * 下发流表 / meter表，安装rest接口
+     * */
+    public static String install(String json,String uri){
+        System.out.println(uri);
+        System.out.println("json==" + json);
         Map<String,String >headers = new HashMap<>();
         headers.put("Content-type","application/json");
         try {
@@ -77,20 +79,9 @@ public class OdlUtil {
         }
         return null;
     }
-    /**
-     * 下发流表
-     * */
-    public static String installFlow(JSONObject flowJson, String uri){
-        String json = flowJson.toJSONString();
-        System.out.println("json=="+json);
-        Map<String,String >headers = new HashMap<>();
-        headers.put("Content-type","application/json");
-        try {
-            return HttpRequestToOdl.sendPut(uri,headers,json);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return null;
+
+    public static String install(JSONObject json, String uri){
+        return install(json.toJSONString(),uri);
     }
 
 
