@@ -9,8 +9,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class MeterJson {
 
-    public static JSONObject getMeterJson(int coflowId,int rate, int flowId, int p){
+    public static JSONObject getMeterJson(int coflowId,int rate, int flowId,String nodeName, int p){
         JSONObject meterTable = new JSONObject()
+                // 这个是RPC方法需要的
+                .fluentPut("node", "/opendaylight-inventory:nodes/opendaylight-inventory:node[opendaylight-inventory:id='" + nodeName + "']")
                 .fluentPut("meter-id",String.valueOf(Constant.hash(coflowId,flowId)))
                 .fluentPut("meter-name","meter" + Constant.hash(coflowId,flowId) + p)
                 .fluentPut("flags","meter-kbps")
@@ -26,6 +28,7 @@ public class MeterJson {
                                 )
                         )
                 );
+        System.out.println(meterTable.get("node"));
         return new JSONObject().fluentPut("input",meterTable);
     }
 }

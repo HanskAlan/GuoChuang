@@ -11,7 +11,7 @@ public class FlowJson {
     /**
      * 建立FlowJson框架
      */
-    public FlowJson(int coflowId, int flowId, String target, String odlSwitch){
+    public FlowJson(int coflowId, int flowId, String target, String nodeName){
         this.coflowId = coflowId;
         this.flowId = flowId;
 
@@ -22,7 +22,7 @@ public class FlowJson {
 
         // 这个是RPC方法需要的
         flowTable.put("node",
-                "/opendaylight-inventory:nodes/opendaylight-inventory:node[opendaylight-inventory:id='" + odlSwitch + "']"
+                "/opendaylight-inventory:nodes/opendaylight-inventory:node[opendaylight-inventory:id='" + nodeName + "']"
         );
         System.out.println(flowTable.get("node"));
 

@@ -13,17 +13,20 @@ public class PushFlowService {
     public static final String FLOW_URI = "http://" + Constant.host + ":8181/restconf/operations/sal-flow:add-flow";
     public static final String METER_URI = "http://" + Constant.host + ":8181/restconf/operations/sal-meter:add-meter";
 
-    public static void pushFlowAndMeter(int coflowId, int flowId, Double rate, String inPort, String outPort, String nodeId, String dstIp, int p){
+    public static void pushFlowAndMeter(int coflowId, int flowId, Double rate, String inPort, String outPort, String nodeName, String dstIp, int p){
         // 初始化odl工具类用于登陆的权限验证 初始话的时候运行了一些东西，不知道有什么用
         @SuppressWarnings("unused") OdlUtil odlUtil = new OdlUtil(Constant.host,Constant.port,Constant.username,Constant.password,Constant.containerName);
         int bandwidth = new Double(rate * 1000).intValue();
         // 调用odl接口下发meter表
-        JSONObject jsonObjectMeter = MeterJson.getMeterJson(coflowId,bandwidth,flowId,p);
-        OdlUtil.installRPC(jsonObjectMeter.toJSONString(), METER_URI);
+        JSONObject jsonObjectMeter = MeterJson.getMeterJson(coflowId,bandwidth,flowId,nodeName,p);
+        OdlUtil.installRPC(
+                jsonObjectMeter.toJSONString(),
+                METER_URI
+        );
 
         // 调用odl接口下发流
         OdlUtil.installRPC(
-                new FlowJson(coflowId,flowId,dstIp,nodeId).transmitAction(outPort).getRPCFlowTable(),
+                new FlowJson(coflowId,flowId,dstIp,nodeName).transmitAction(outPort).getRPCFlowTable(),
                 FLOW_URI
         );
     }
