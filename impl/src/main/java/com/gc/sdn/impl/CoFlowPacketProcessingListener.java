@@ -55,13 +55,8 @@ public class CoFlowPacketProcessingListener implements PacketProcessingListener{
                     closeOdlDefaultConfig();
                     RACLog.instance().setPath(Constant.RAC_LOG_PATH);
                     RAC.instance().INITIAL_RAC(jsonObject);
-                    System.out.println("Choose OMCoflow solver");
-//                    RAC.instance().setSolver(new ECMPSolver());
-                    RAC.instance().setSolver(new OMCoflowSolver()); // 这个是默认的
-//                    RAC.instance().setSolver(new OMCoflowRSolver());
-//                    RAC.instance().setSolver(new OMCoflowASolver());
-//                    RAC.instance().setSolver(new RapierSolver());
-//                    RAC.instance().setSolver(new RandomizeRapierSolver());
+                    System.out.println("Choose " + Constant.SOLVER_NAME + " solver");
+                    RAC.instance().setSolver(Constant.SOLVER); // 这个是默认的
                     count++;
                     logger.info("Topology initialization completed successfully!");
                     return;
