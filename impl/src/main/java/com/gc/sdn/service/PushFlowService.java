@@ -16,7 +16,7 @@ public class PushFlowService {
     public static void pushFlowAndMeter(int coflowId, int flowId, Double rate, String inPort, String outPort, String nodeName, String dstIp, int p){
         // 初始化odl工具类用于登陆的权限验证 初始话的时候运行了一些东西，不知道有什么用
         @SuppressWarnings("unused") OdlUtil odlUtil = new OdlUtil(Constant.host,Constant.port,Constant.username,Constant.password,Constant.containerName);
-        int bandwidth = new Double(rate * 1000).intValue();
+        int bandwidth = new Double(rate * 8000).intValue();
         // 调用odl接口下发meter表
         JSONObject jsonObjectMeter = MeterJson.getMeterJson(coflowId,bandwidth,flowId,nodeName,p);
         OdlUtil.installRPC(

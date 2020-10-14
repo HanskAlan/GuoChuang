@@ -23,10 +23,10 @@ public interface Constant {
     String containerName = "default";
 
     // RAC 参数
-//    RASolver SOLVER = new OMCoflowSolver();
-//    String SOLVER_NAME = "OMCoflow";
-    RASolver SOLVER = new RapierSolver();
-    String SOLVER_NAME = "Rapier";
+    RASolver SOLVER = new OMCoflowSolver();
+    String SOLVER_NAME = "OMCoflow";
+//    RASolver SOLVER = new RapierSolver();
+//    String SOLVER_NAME = "Rapier";
 
     // RAC LOG 路径
     String RAC_LOG_PATH = "/home/aberror/Desktop/RACLog/";
@@ -36,6 +36,7 @@ public interface Constant {
 
     // 流表相关的参数
     int priority = 102; // 注意，priority必须大于dropPriority
+    int dropPriority = priority - 1; // 注意，priority必须大于dropPriority
     int idleTimeOut = 60;
     int hardTimeOut = 3600; // 1h
     static int hash(int coflowId,int flowId){

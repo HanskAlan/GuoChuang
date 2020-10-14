@@ -55,6 +55,7 @@ public class FlowJson {
      * 设置动作：丢包
      */
     public FlowJson dropAction(){
+        flowTable.put("priority",Constant.dropPriority);
         JSONObject actionsInstruction = new JSONObject();
         flowTable.put("instructions", new JSONObject()
                 .fluentPut("instruction", new JSONArray()

@@ -191,7 +191,7 @@ public class CoFlowPacketProcessingListener implements PacketProcessingListener{
 
             // 接收到反向应答信号
             try {
-                // 流传输完成，但是其他的还没完成（你之前把一个coflow的全部flow都删掉了）
+                // 流传输完成
                 if (RAC.instance().COMPLETE_AND_TRY(jsonFlow, System.currentTimeMillis())) {
                     JSONArray arrayGet = RAC.instance().GET_ANSWER_FAST_JSON();
                     if (arrayGet != null && arrayGet.size() > 0) {
