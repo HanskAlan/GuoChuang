@@ -7,6 +7,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
@@ -175,27 +176,34 @@ public class HttpRequestToOdl {
     }
 
 
-    public static String sendPut(String postUrl,Map<String, String> postHeaders,String postEntity) throws Exception {
-        postHeaders.put("Authorization",basicAuth);
-        URL postURL = new URL(postUrl);
+    /**
+     * 通过REST接口进行数据发送
+     * @param url 发送的url
+     * @param headers 发送用的头部
+     * @param entity 发送的内容，以json格式
+     * @param requestMethod PUT DELETE or POST
+     */
+    public static String send(String url, Map<String, String> headers, String entity, String requestMethod) throws Exception {
+        headers.put("Authorization",basicAuth);
+        URL postURL = new URL(url);
         HttpURLConnection httpURLConnection = (HttpURLConnection) postURL.openConnection();
         httpURLConnection.setDoOutput(true);
         httpURLConnection.setDoInput(true);
-        httpURLConnection.setRequestMethod("PUT");
+        httpURLConnection.setRequestMethod(requestMethod); // PUT DELETE POST
         httpURLConnection.setUseCaches(false);
         httpURLConnection.setInstanceFollowRedirects(true);
+
         //json格式上传的模式
-//        httpURLConnection.setRequestProperty("Content-Type",  "application/json;charset=utf-8");
         StringBuilder sbStr = new StringBuilder();
-        if(postHeaders != null) {
-            for(String pKey : postHeaders.keySet()) {
-                httpURLConnection.setRequestProperty(pKey, postHeaders.get(pKey));
+        if(headers != null) {
+            for(String pKey : headers.keySet()) {
+                httpURLConnection.setRequestProperty(pKey, headers.get(pKey));
             }
         }
-        if(postEntity != null) {
+        if(entity != null) {
             try {
                 PrintWriter out = new PrintWriter(new OutputStreamWriter(httpURLConnection.getOutputStream(), "utf-8"));
-                out.println(postEntity);
+                out.println(entity);
                 out.close();
                 BufferedReader in = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream(), "utf-8"));
                 String inputLine;
@@ -208,6 +216,9 @@ public class HttpRequestToOdl {
             }
         }
         httpURLConnection.disconnect();
-        return new String(sbStr.toString().getBytes(),"utf-8");
+        return new String(sbStr.toString().getBytes(), StandardCharsets.UTF_8);
+    }
+    public static String sendPut(String url, Map<String, String> headers, String entity, String requestMethod) throws Exception {
+        return send(url,headers,entity,"PUT");
     }
 }

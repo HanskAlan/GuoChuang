@@ -67,21 +67,41 @@ public class OdlUtil {
     /**
      * 下发流表 / meter表，安装rest接口
      * */
-    public static String install(String json,String uri){
+    public static String installConfig(String json, String uri){
         System.out.println(uri);
         System.out.println("json==" + json);
         Map<String,String >headers = new HashMap<>();
         headers.put("Content-type","application/json");
         try {
-            return HttpRequestToOdl.sendPut(uri,headers,json);
+            return HttpRequestToOdl.send(uri,headers,json, "PUT");
         }catch (Exception e){
             e.printStackTrace();
         }
         return null;
     }
 
-    public static String install(JSONObject json, String uri){
-        return install(json.toJSONString(),uri);
+    public static String installConfig(JSONObject json, String uri){
+        return installConfig(json.toJSONString(),uri);
+    }
+
+    public static void installRPC(String json, String uri){
+//        URL: /restconf/operations/sal-flow:add-flow
+//        Method: POST
+//        Headers:
+    //        Content-type: application/json
+//            Accept: application/json
+//            Authentication: admin:admin
+        System.out.println(uri);
+        System.out.println(json);
+        System.out.println("---");
+        Map<String,String >headers = new HashMap<>();
+        headers.put("Content-type","application/json");
+        headers.put("Accept","application/json");
+        try {
+            HttpRequestToOdl.send(uri, headers, json, "POST");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
 

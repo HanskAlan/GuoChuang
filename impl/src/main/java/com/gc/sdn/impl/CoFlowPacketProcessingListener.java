@@ -223,11 +223,11 @@ public class CoFlowPacketProcessingListener implements PacketProcessingListener{
      */
     private void closeOdlDefaultConfig(){
         String url = "http://" + Constant.host +":8181/restconf/config/l2switch-config:l2switch-config/";
-        String json =
+        String json = // 值为true时才是关闭
                 "{\"l2switch-config\":" +
-                    "{\"is-learning-only-mode\":false}" +
+                    "{\"is-learning-only-mode\":true}" +
                 "}";
-        OdlUtil.install(json,url);
+        OdlUtil.installConfig(json,url);
     }
 
 }
