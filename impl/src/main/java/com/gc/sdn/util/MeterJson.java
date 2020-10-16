@@ -28,7 +28,7 @@ public class MeterJson {
                                 )
                         )
                 );
-        System.out.println(meterTable.get("node"));
+//        System.out.println(meterTable.get("node"));
         return new JSONObject().fluentPut("input",meterTable);
     }
 }
