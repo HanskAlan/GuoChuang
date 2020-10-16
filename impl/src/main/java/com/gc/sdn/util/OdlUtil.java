@@ -91,9 +91,7 @@ public class OdlUtil {
     //        Content-type: application/json
 //            Accept: application/json
 //            Authentication: admin:admin
-        System.out.println(uri);
-        System.out.println(json);
-        System.out.println("--- Begin send at time :" + getTime());
+        long startTime = System.currentTimeMillis();
         Map<String,String >headers = new HashMap<>();
         headers.put("Content-type","application/json");
         headers.put("Accept","application/json");
@@ -102,8 +100,11 @@ public class OdlUtil {
         }catch (Exception e){
             e.printStackTrace();
         }
-        System.out.println("--- End send at time :" + getTime());
-
+        System.out.println(
+                uri + "\n" + json + "\n" +
+                "--- start time " + startTime +
+                " spend time " + (System.currentTimeMillis() - startTime)
+        );
     }
 
 
