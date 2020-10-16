@@ -93,7 +93,7 @@ public class OdlUtil {
 //            Authentication: admin:admin
         System.out.println(uri);
         System.out.println(json);
-        System.out.println("---");
+        System.out.println("--- Begin send at time :" + getTime());
         Map<String,String >headers = new HashMap<>();
         headers.put("Content-type","application/json");
         headers.put("Accept","application/json");
@@ -102,10 +102,25 @@ public class OdlUtil {
         }catch (Exception e){
             e.printStackTrace();
         }
+        System.out.println("--- End send at time :" + getTime());
+
     }
 
 
     private String getBasicAuthStr(String name,String password){
         return "Basic " + Base64.getEncoder().encodeToString((name + ":" + password).getBytes());
     }
+
+    /**
+     * 获取相对时间
+     */
+    public static long getTime(){
+        if (beginTime == -1) beginTime = System.currentTimeMillis();
+        return System.currentTimeMillis() - beginTime;
+    }
+    private static long beginTime = -1;
 }
+
+
+
+

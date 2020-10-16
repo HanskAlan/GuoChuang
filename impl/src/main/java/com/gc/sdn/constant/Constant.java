@@ -23,11 +23,11 @@ public interface Constant {
     String containerName = "default";
 
     // RAC 参数
-//    RASolver SOLVER = new OMCoflowSolver();
-//    String SOLVER_NAME = "OMCoflow";
+    RASolver SOLVER = new OMCoflowSolver();
+    String SOLVER_NAME = "OMCoflow";
 
-    RASolver SOLVER = new RapierSolver();
-    String SOLVER_NAME = "Rapier";
+//    RASolver SOLVER = new RapierSolver();
+//    String SOLVER_NAME = "Rapier";
 
     // RAC LOG 路径
     String RAC_LOG_PATH = "/home/aberror/Desktop/RACLog/";
